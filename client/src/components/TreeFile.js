@@ -54,7 +54,6 @@ const TreeFile = ({ file }) => {
     setshowEdit(true)
   }
   const handleAddFile = (data) => {
-    console.log(data)
     setFileType(data)
     setShowAddForm(true)
     setshowChildren(true)
