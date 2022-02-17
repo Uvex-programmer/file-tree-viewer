@@ -74,6 +74,8 @@ const TreeFile = ({ file }) => {
         <div
           className={styles.header}
           onClick={() => {
+            setShowAddForm(false)
+            setshowEdit(false)
             if (file.type !== 'folder') return
             setshowChildren((prev) => !prev)
           }}
@@ -106,7 +108,12 @@ const TreeFile = ({ file }) => {
           />
         )}
         {showEdit ? (
-          <Form file={file} formHandler={formHandler} action='edit' />
+          <Form
+            file={file}
+            type={fileType}
+            formHandler={formHandler}
+            action='edit'
+          />
         ) : (
           <File />
         )}

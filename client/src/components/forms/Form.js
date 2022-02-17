@@ -62,7 +62,7 @@ const Form = ({ formHandler, file, action, type }) => {
 
   return (
     <div className={styles.center}>
-      <Icon data={type} />
+      <Icon data={type ? type : file.type} />
       <form className={styles.form}>
         <input
           className={styles.input}
