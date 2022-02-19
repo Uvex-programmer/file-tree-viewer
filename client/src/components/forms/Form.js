@@ -3,35 +3,37 @@ import Icon from '../Icon'
 import { useContext, useState } from 'react'
 import { TreeContext } from '../../store/ContextProvider'
 /**
- * Form with and input field that will handle either add or edit file
+ * Form with and input field that will handle either add or edit file/folder
  * depending on what action we prop down to this component
  */
 
 const Form = ({ formHandler, file, action, type }) => {
   const ctx = useContext(TreeContext)
-  const [newFileName, setNewFileName] = useState('')
+  const [fileName, setFileName] = useState('')
 
-  const setFileNameHandler = (data) => {
-    const name = data.replaceAll('/', '')
-    setNewFileName(name)
+  const createFolderOrFile = (name) => {
+    const updatedName = name.replaceAll('/', '')
+    return type === 'folder' ? updatedName + '/' : updatedName
   }
 
-  const editHandler = (e) => {
+  const submitHandler = (e) => {
     e.preventDefault()
-    if (newFileName.length < 1) return
+    if (fileName.length < 1) return
     switch (action) {
       case 'add':
         fetch('/api/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            path: file.currentPath,
-            name: type === 'folder' ? newFileName + '/' : newFileName,
+            path: file
+              ? file.currentPath + createFolderOrFile(fileName)
+              : createFolderOrFile(fileName),
           }),
         })
           .then((res) => res.json())
           .then((data) => {
-            formHandler('add')
+            setFileName('')
+            file && formHandler('add')
             if (data.message) {
               console.log(data.message)
               return
@@ -45,14 +47,15 @@ const Form = ({ formHandler, file, action, type }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             oldPath: file.currentPath,
-            newPath: newFileName,
+            newPath: fileName,
             type: file.type,
           }),
         })
           .then((res) => res.json())
           .then((data) => {
+            setFileName('')
+            file && formHandler('edit')
             ctx.setTreeHandler(data)
-            formHandler('edit')
           })
         break
       default:
@@ -66,15 +69,12 @@ const Form = ({ formHandler, file, action, type }) => {
       <form className={styles.form}>
         <input
           className={styles.input}
-          placeholder={file.name}
+          placeholder={file ? file.name : ''}
           type='text'
-          onChange={(e) =>
-            setTimeout(() => {
-              setFileNameHandler(e.target.value)
-            }, 100)
-          }
+          onChange={(e) => setFileName(e.target.value)}
+          value={fileName}
         />
-        <button onClick={(e) => editHandler(e)}>save</button>
+        <button onClick={(e) => submitHandler(e)}>enter</button>
       </form>
     </div>
   )

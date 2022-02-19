@@ -12,11 +12,11 @@ import Form from './forms/Form'
 
 const TreeFile = ({ file }) => {
   // State for knowing if a folder is open or not
-  const [showChildren, setshowChildren] = useState(false)
+  const [showChildren, setShowChildren] = useState(false)
   // State for open menu on right click
-  const [showMenu, setshowMenu] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
   // State for adding the edit field when renaming a file/folder
-  const [showEdit, setshowEdit] = useState(false)
+  const [showEditForm, setShowEditForm] = useState(false)
   // State for checking what type of file for icon
   const [fileType, setFileType] = useState('')
   // State for adding the input fieldn when creating an folder/file
@@ -26,37 +26,27 @@ const TreeFile = ({ file }) => {
 
   const handleMenu = (e) => {
     e.preventDefault()
-    setshowMenu((prev) => !prev)
+    setShowMenu((prev) => !prev)
   }
 
   const handleClick = () => {
-    showMenu && setshowMenu(false)
+    showMenu && setShowMenu(false)
   }
 
   const formHandler = (action) => {
-    switch (action) {
-      case 'edit':
-        setshowEdit((prev) => !prev)
-        break
-      case 'add':
-        setShowAddForm((prev) => !prev)
-
-        break
-      default:
-        break
-    }
+    action === 'add' ? setShowAddForm(false) : setShowEditForm(false)
   }
   const showMenuHandler = () => {
-    setshowMenu((prev) => !prev)
+    setShowMenu((prev) => !prev)
   }
 
   const handleEdit = () => {
-    setshowEdit(true)
+    setShowEditForm(true)
   }
   const handleAddFile = (data) => {
     setFileType(data)
     setShowAddForm(true)
-    setshowChildren(true)
+    setShowChildren(true)
   }
 
   const File = () => {
@@ -74,9 +64,9 @@ const TreeFile = ({ file }) => {
           className={styles.header}
           onClick={() => {
             setShowAddForm(false)
-            setshowEdit(false)
+            setShowEditForm(false)
             if (file.type !== 'folder') return
-            setshowChildren((prev) => !prev)
+            setShowChildren((prev) => !prev)
           }}
           ref={item}
         >
@@ -93,7 +83,7 @@ const TreeFile = ({ file }) => {
       {showMenu && (
         <div
           className={styles.overlay}
-          onClick={() => setshowMenu(false)}
+          onClick={() => setShowMenu(false)}
         ></div>
       )}
 
@@ -106,7 +96,7 @@ const TreeFile = ({ file }) => {
             setMenu={showMenuHandler}
           />
         )}
-        {showEdit ? (
+        {showEditForm ? (
           <Form
             file={file}
             type={fileType}

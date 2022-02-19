@@ -1,36 +1,25 @@
 import utils from '../utils/utils.js'
 
-/**
- * ADD FILE/FOLDER
- */
+// ADD FILE/FOLDER
 const addFile = async (req, res) => {
-  let { name, path } = req.body
+  let { path } = req.body
   //Fetch json file
   const jsonFile = await utils.getJsonFile()
 
   //Check if path already exists in the json file and send message if it does
   for (const file of jsonFile) {
-    console.log()
-    if (file === path + name || file === name) {
+    if (file === path) {
       res.send({ message: 'already exists' })
       return
     }
   }
-  // if there is no path we are in root folder and will only push the name that will create a file/folder
-  // in root.
-  if (path !== undefined) {
-    jsonFile.push(path + name)
-  } else {
-    jsonFile.push(name)
-  }
-
+  jsonFile.push(path)
   utils.writeToJsonFile(jsonFile)
   var newTree = utils.createTree(jsonFile)
   res.send(JSON.stringify(newTree))
 }
-/**
- * DELETE FILE/FOLDER
- */
+
+// DELETE FILE/FOLDER
 const deleteFile = async (req, res) => {
   var string = req.body.path
   // fetch json file
@@ -43,26 +32,21 @@ const deleteFile = async (req, res) => {
   res.send(JSON.stringify(newTree))
 }
 
-/**
- * RENAME FILE/FOLDER
- */
+// RENAME FILE/FOLDER
 const updateFile = async (req, res) => {
-  var { oldPath, newPath, type } = req.body
-  // We need to destructure old path
-  var buildNewPath = oldPath.split('/')
-  // if we have an empty field at last index we need to pop two times
-  // then push the new name for folder/file
-  if (buildNewPath[buildNewPath.length - 1] === '') {
-    buildNewPath.pop()
-  }
-  buildNewPath.pop()
-  buildNewPath.push(newPath)
+  const { oldPath, newPath, type } = req.body
+  // We need to destructure old path and remove empty values
+  var creatingPath = oldPath.split('/').filter((part) => part.length > 0)
+  // removing the part that we will rename
+  creatingPath.pop()
+  //adding the new name to the file/folder
+  creatingPath.push(newPath)
   // reasemble the string path and fetch the json file
-  var doneNewPath = buildNewPath.join('/')
+  var pathCreated = creatingPath.join('/')
   var jsonFile = await utils.getJsonFile()
   // replace the old path in json file with the new and updated string path
   var newFile = jsonFile.map((path) =>
-    path.replace(oldPath, type === 'folder' ? doneNewPath + '/' : doneNewPath)
+    path.replace(oldPath, type === 'folder' ? pathCreated + '/' : pathCreated)
   )
   // save and send back new structure
   utils.writeToJsonFile(newFile)
