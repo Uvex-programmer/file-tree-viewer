@@ -2,7 +2,7 @@ import utils from '../utils/utils.js'
 
 // ADD FILE/FOLDER
 const addFile = async (req, res) => {
-  let { path } = req.body
+  const { path } = req.body
   //Fetch json file
   const jsonFile = await utils.getJsonFile()
 
@@ -15,20 +15,26 @@ const addFile = async (req, res) => {
   }
   jsonFile.push(path)
   utils.writeToJsonFile(jsonFile)
-  var newTree = utils.createTree(jsonFile)
+  const newTree = utils.createTree(jsonFile)
   res.send(JSON.stringify(newTree))
 }
 
 // DELETE FILE/FOLDER
 const deleteFile = async (req, res) => {
-  var string = req.body.path
+  const { path, type } = req.body
   // fetch json file
-  var jsonFile = await utils.getJsonFile()
+  const jsonFile = await utils.getJsonFile()
+
   // filter out the path that we want deleted.
-  var newFile = jsonFile.filter((path) => !path.includes(string))
+  const newJsonFile = jsonFile.filter((paths) => {
+    if (type === 'folder') {
+      return !paths.includes(path)
+    }
+    return paths !== path
+  })
   // save new json file
-  utils.writeToJsonFile(newFile)
-  var newTree = utils.createTree(newFile)
+  utils.writeToJsonFile(newJsonFile)
+  const newTree = utils.createTree(newJsonFile)
   res.send(JSON.stringify(newTree))
 }
 
@@ -43,14 +49,14 @@ const updateFile = async (req, res) => {
   creatingPath.push(newPath)
   // reasemble the string path and fetch the json file
   var pathCreated = creatingPath.join('/')
-  var jsonFile = await utils.getJsonFile()
+  const jsonFile = await utils.getJsonFile()
   // replace the old path in json file with the new and updated string path
-  var newFile = jsonFile.map((path) =>
+  const newFile = jsonFile.map((path) =>
     path.replace(oldPath, type === 'folder' ? pathCreated + '/' : pathCreated)
   )
   // save and send back new structure
   utils.writeToJsonFile(newFile)
-  var newTree = utils.createTree(newFile)
+  const newTree = utils.createTree(newFile)
   res.send(JSON.stringify(newTree))
 }
 
@@ -59,7 +65,7 @@ const updateFile = async (req, res) => {
  * here is the fetch of the tree structure
  */
 const getTree = async (req, res) => {
-  var tree = utils.createTree(await utils.getJsonFile())
+  const tree = utils.createTree(await utils.getJsonFile())
   res.send(JSON.stringify(tree))
 }
 

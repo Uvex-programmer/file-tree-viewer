@@ -15,7 +15,7 @@ const Menu = ({ file, edit, addFile, setMenu }) => {
     fetch('/api/delete', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: file.currentPath }),
+      body: JSON.stringify({ path: file.currentPath, type: file.type }),
     })
       .then((res) => res.json())
       .then((data) => ctx.setTreeHandler(data))
