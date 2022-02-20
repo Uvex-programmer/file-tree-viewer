@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 /**
  * Added a context provider so we can easily set and update
- * the file tree when we do different updates and so on in differnt components.
+ * the file tree when we do different updates and so on in different components.
  */
 export const TreeContext = React.createContext({
   tree: [],

@@ -24,11 +24,6 @@ const TreeFile = ({ file }) => {
   // Ref for the div we need to add eventlistener to for overriding the browser right click event.
   const item = useRef()
 
-  const handleMenu = (e) => {
-    e.preventDefault()
-    setShowMenu((prev) => !prev)
-  }
-
   const handleClick = () => {
     showMenu && setShowMenu(false)
   }
@@ -36,11 +31,12 @@ const TreeFile = ({ file }) => {
   const formHandler = (action) => {
     action === 'add' ? setShowAddForm(false) : setShowEditForm(false)
   }
-  const showMenuHandler = () => {
+  const showMenuHandler = (e) => {
+    e.preventDefault()
     setShowMenu((prev) => !prev)
   }
 
-  const handleEdit = () => {
+  const handleEditFile = () => {
     setShowEditForm(true)
   }
   const handleAddFile = (data) => {
@@ -49,10 +45,17 @@ const TreeFile = ({ file }) => {
     setShowChildren(true)
   }
 
+  const fileClickHandler = () => {
+    setShowAddForm(false)
+    setShowEditForm(false)
+    if (file.type !== 'folder') return
+    setShowChildren((prev) => !prev)
+  }
+
   const File = () => {
     // Adding event listener to the items so we can open our own menu on right click.
     useEffect(() => {
-      item.current.addEventListener('contextmenu', handleMenu)
+      item.current.addEventListener('contextmenu', showMenuHandler)
       item.current.addEventListener('click', handleClick)
     })
     // Variable that changes the css depending on if folder is open or closed.
@@ -60,16 +63,7 @@ const TreeFile = ({ file }) => {
 
     return (
       <>
-        <div
-          className={styles.header}
-          onClick={() => {
-            setShowAddForm(false)
-            setShowEditForm(false)
-            if (file.type !== 'folder') return
-            setShowChildren((prev) => !prev)
-          }}
-          ref={item}
-        >
+        <div className={styles.header} onClick={fileClickHandler} ref={item}>
           {file.type === 'folder' && <Icon data={childrenTrue} />}
           <Icon data={file.type} />
           <div className={styles.name}>{file.name}</div>
@@ -91,7 +85,7 @@ const TreeFile = ({ file }) => {
         {showMenu && (
           <Menu
             file={file}
-            edit={handleEdit}
+            edit={handleEditFile}
             addFile={handleAddFile}
             setMenu={showMenuHandler}
           />

@@ -11,6 +11,8 @@ const Form = ({ formHandler, file, action, type }) => {
   const ctx = useContext(TreeContext)
   const [fileName, setFileName] = useState('')
 
+  // If its a folder we most add the forward slash at the end. And we remove all forward
+  // slashes if a user enters it in the name. Or it will create extra sub folders.
   const createFolderOrFile = (name) => {
     const updatedName = name.replaceAll('/', '')
     return type === 'folder' ? updatedName + '/' : updatedName
@@ -35,7 +37,7 @@ const Form = ({ formHandler, file, action, type }) => {
             setFileName('')
             file && formHandler('add')
             if (data.message) {
-              console.log(data.message)
+              alert(data.message)
               return
             }
             ctx.setTreeHandler(data)
@@ -55,6 +57,10 @@ const Form = ({ formHandler, file, action, type }) => {
           .then((data) => {
             setFileName('')
             file && formHandler('edit')
+            if (data.message) {
+              alert(data.message)
+              return
+            }
             ctx.setTreeHandler(data)
           })
         break

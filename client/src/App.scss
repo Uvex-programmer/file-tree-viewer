@@ -8,7 +8,7 @@ body {
     rgba(27, 27, 29, 1) 35%,
     rgba(0, 0, 0, 1) 100%
   );
-  padding: 5rem;
+  padding: 3rem;
   color: white;
   font-size: 1.6rem;
 }
@@ -19,10 +19,10 @@ body {
 }
 
 .App-container {
-  border: 1px solid rgb(114, 65, 65);
+  //border: 1px solid rgb(114, 65, 65);
   border-radius: 10px;
   padding: 1rem;
-  height: 50rem;
+  height: 100%;
   width: 40rem;
 
   @media screen and (max-width: 850px) {
@@ -43,21 +43,18 @@ body {
   display: flex;
   height: 2rem;
   align-items: center;
-  font-size: 1rem;
 
-  & input {
-    margin: 0 1rem;
+  & p {
+    font-size: 1rem;
   }
-
-  & button {
-    margin-right: 1rem;
-    cursor: pointer;
-  }
+  font-size: 1.6rem;
 }
 
 input {
   border: none;
   outline: none;
+  background-color: rgba(71, 71, 71, 0.747);
+  color: white;
   width: 6rem;
   margin-left: 0.8rem;
   margin-right: 0.2rem;

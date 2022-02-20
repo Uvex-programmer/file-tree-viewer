@@ -27,35 +27,35 @@ const Menu = ({ file, edit, addFile, setMenu }) => {
         {file.type === 'folder' && (
           <>
             <button
-              onClick={() => {
+              onClick={(e) => {
                 addFile('file')
-                setMenu()
+                setMenu(e)
               }}
             >
-              new File
+              New file
             </button>
             <button
-              onClick={() => {
-                setMenu()
+              onClick={(e) => {
+                setMenu(e)
                 addFile('folder')
               }}
             >
-              new Folder
+              New folder
             </button>
           </>
         )}
 
         <button
-          onClick={() => {
-            setMenu()
+          onClick={(e) => {
+            setMenu(e)
             deleteFile()
           }}
         >
           Delete
         </button>
         <button
-          onClick={() => {
-            setMenu()
+          onClick={(e) => {
+            setMenu(e)
             edit()
           }}
         >

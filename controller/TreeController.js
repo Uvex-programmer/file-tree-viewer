@@ -7,11 +7,10 @@ const addFile = async (req, res) => {
   const jsonFile = await utils.getJsonFile()
 
   //Check if path already exists in the json file and send message if it does
-  for (const file of jsonFile) {
-    if (file === path) {
-      res.send({ message: 'already exists' })
-      return
-    }
+  const pathExists = utils.stringExists(path, jsonFile)
+  if (pathExists) {
+    res.send({ message: 'already exists' })
+    return
   }
   jsonFile.push(path)
   utils.writeToJsonFile(jsonFile)
@@ -43,17 +42,21 @@ const updateFile = async (req, res) => {
   const { oldPath, newPath, type } = req.body
   // We need to destructure old path and remove empty values
   var creatingPath = oldPath.split('/').filter((part) => part.length > 0)
-  // removing the part that we will rename
+  // removing the part that we will rename and adding the new name
   creatingPath.pop()
-  //adding the new name to the file/folder
   creatingPath.push(newPath)
-  // reasemble the string path and fetch the json file
+  // reasemble the string path
   var pathCreated = creatingPath.join('/')
+  pathCreated = type === 'folder' ? pathCreated + '/' : pathCreated
   const jsonFile = await utils.getJsonFile()
+
+  const pathExists = utils.stringExists(pathCreated, jsonFile)
+  if (pathExists) {
+    res.send({ message: 'already exists' })
+    return
+  }
   // replace the old path in json file with the new and updated string path
-  const newFile = jsonFile.map((path) =>
-    path.replace(oldPath, type === 'folder' ? pathCreated + '/' : pathCreated)
-  )
+  const newFile = jsonFile.map((path) => path.replace(oldPath, pathCreated))
   // save and send back new structure
   utils.writeToJsonFile(newFile)
   const newTree = utils.createTree(newFile)

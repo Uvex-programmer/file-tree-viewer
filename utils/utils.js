@@ -31,6 +31,11 @@ const createFileOrFolder = (isLastIndex, path, currentPath) => {
   }
 }
 
+//Check if string in array already exists
+const stringExists = (value, array) => {
+  return array.indexOf(value) > -1
+}
+
 const createTree = (paths) => {
   // Starting with sorting all strings in path array.
   paths = paths.sort(function (a, b) {
@@ -82,6 +87,7 @@ const utils = {
   createTree,
   getJsonFile,
   writeToJsonFile,
+  stringExists,
 }
 
 export default utils

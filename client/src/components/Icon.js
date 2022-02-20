@@ -8,12 +8,6 @@ import {
 } from 'react-icons/fc'
 import { MdKeyboardArrowRight, MdKeyboardArrowDown } from 'react-icons/md'
 
-/**
- * Icon component where we pass down what type the file is.
- * Will only get different outcomes if the user puts ".something" at the end
- * of file name.
- */
-
 const Icon = ({ data }) => {
   switch (data) {
     case 'txt':
